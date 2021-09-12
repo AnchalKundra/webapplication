@@ -1,4 +1,9 @@
 pipeline {
+    environment {
+    registry = "anchalkundra/tomcat"
+    registryCredential = 'dockerid'
+    dockerImage = ''
+  }
     agent any
     parameters {
         gitParameter(branch: '',
@@ -27,6 +32,13 @@ pipeline {
               tool name: 'Maven_home', type: 'maven'
               sh 'mvn clean install'
             }
+        }
+	 stage('Building image') {
+      	    steps{
+              script {
+              	dockerImage = docker.build registry + ":$BUILD_NUMBER"
+            }
+          }
         }
     }
 }
